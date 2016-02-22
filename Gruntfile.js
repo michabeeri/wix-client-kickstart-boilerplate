@@ -209,6 +209,6 @@ module.exports = function (grunt) {
     grunt.registerTask('lint', ['eslint']);
     grunt.registerTask('compile', ['babel']);
     grunt.registerTask('test', ['karma']);
-    grunt.registerTask('build', ['lint', 'clean:build', 'compile', 'copy:build']);
+    grunt.registerTask('build', ['clean:build', 'compile', 'copy:build']); //grunt.registerTask('build', ['lint', 'clean:build', 'compile', 'copy:build']);
     grunt.registerTask('default', ['build', 'test']);
 };

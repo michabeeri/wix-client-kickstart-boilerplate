@@ -25,6 +25,6 @@ requirejs(['lodash', 'react', 'reactDOM', 'components/MainView'],
     function (_, React, ReactDOM, MainView) {
         'use strict';
         var mountPoint = document.getElementById('app');
-        ReactDOM.render(<MainView />, mountPoint);
+        ReactDOM.render(<WikipediaSearch />, mountPoint);
     }
 );
