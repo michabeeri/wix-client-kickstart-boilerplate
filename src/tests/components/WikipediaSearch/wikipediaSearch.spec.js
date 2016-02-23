@@ -52,7 +52,7 @@ define(['lodash', 'React', 'reactDOM', 'components/WikipediaSearch/WikipediaSear
             beforeEach(function () {
                 comp = TestUtils.renderIntoDocument(React.createElement(WikipediaSearch));
                 mockQueryResults = {};
-                mockedProcessResults = spyOn(comp, 'processQueryResults');
+                //mockedProcessResults = spyOn(comp, 'processQueryResults').and.callFake(function(){done()});
                 mockedGetJSON = spyOn($, 'getJSON').and.returnValue(Promise.resolve(mockQueryResults));
             });
 
@@ -61,12 +61,14 @@ define(['lodash', 'React', 'reactDOM', 'components/WikipediaSearch/WikipediaSear
                 expect(mockedGetJSON).toHaveBeenCalledWith(jasmine.stringMatching('&search=' + encodeURIComponent('giraffe')));
             });
 
-            //it('should chain processQueryResults to the async wikipedia query', function () {
-            //    comp.throttledWikiphediaQuery('giraffe');
-            //    expect(mockedProcessResults).toHaveBeenCalledWith(mockQueryResults);
-            //});
+            it('should chain processQueryResults to the async wikipedia query', function (done) {
+                mockedProcessResults = spyOn(comp, 'processQueryResults').and.callFake(function(){done()});
+                comp.throttledWikiphediaQuery('giraffe');
+                //expect(mockedProcessResults).toHaveBeenCalledWith(mockQueryResults);
+                //done();
+            });
 
-            it('should throttle consecutive queries and issue maximum of 1 per second', function (done) {
+            xit('should throttle consecutive queries and issue maximum of 1 per second', function (done) {
                 setTimeout(function(){
                     comp.throttledWikiphediaQuery('giraffe');
                     comp.throttledWikiphediaQuery('yak');
@@ -78,6 +80,39 @@ define(['lodash', 'React', 'reactDOM', 'components/WikipediaSearch/WikipediaSear
                         done();
                     }, 1100);
                 }, 1100);
+            });
+        });
+
+        describe('WikipediaSearch processQueryResults', function () {
+
+            var comp,
+                mockedUniqeId,
+                mockedsetState,
+                queryData,
+                expectedState;
+
+            beforeEach(function () {
+                comp = TestUtils.renderIntoDocument(React.createElement(WikipediaSearch));
+                queryData = [
+                    'searchTerm',
+                    ['name1', 'name2'],
+                    null,
+                    ['path1', 'path2']
+                ];
+                expectedState = {
+                    searchTerm: 'searchTerm',
+                    results: [
+                        {id: '0000', name: 'name1', path: 'path1'},
+                        {id: '0000', name: 'name2', path: 'path2'}
+                    ]
+                };
+                mockedsetState = spyOn(comp, 'setState');
+                mockedUniqeId = spyOn(_, 'uniqueId').and.returnValue('0000');
+            });
+
+            it('should parse search term and results from wikipedia query data', function () {
+                comp.processQueryResults(queryData);
+                expect(mockedsetState).toHaveBeenCalledWith(expectedState);
             });
         });
     });
