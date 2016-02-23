@@ -25,8 +25,8 @@ requirejs.config({
     }
 });
 
-requirejs(['lodash', 'react', 'reactDOM', 'components/MainView'],
-    function (_, React, ReactDOM, MainView) {
+requirejs(['lodash', 'react', 'reactDOM', 'components/WikipediaSearch/WikipediaSearch'],
+    function (_, React, ReactDOM, WikipediaSearch) {
         'use strict';
         var mountPoint = document.getElementById('app');
         ReactDOM.render(<WikipediaSearch />, mountPoint);

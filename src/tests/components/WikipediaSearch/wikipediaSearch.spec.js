@@ -76,7 +76,7 @@ define(['lodash', 'React', 'reactDOM', 'components/WikipediaSearch/WikipediaSear
                 }, 0);
             });
 
-            it('should throttle consecutive queries and issue maximum of 1 per second', function () {
+            it('should throttle consecutive queries and issue maximum of 1 per second', function (done) {
                 comp.throttledWikiphediaQuery('giraffe');
                 comp.throttledWikiphediaQuery('yak');
                 comp.throttledWikiphediaQuery('seal');
