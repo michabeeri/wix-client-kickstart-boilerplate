@@ -12,7 +12,8 @@ requirejs.config({
         lodash: 'vendor/lodash',
         React: 'vendor/react',
         reactDOM: 'vendor/react-dom',
-        components: 'js/components'
+        components: 'js/components',
+        jquery: "//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min"
     },
     map: {
         '*': {
@@ -32,6 +33,9 @@ requirejs.config({
         React: {
             exports: 'React'
         },
-        reactDom: ['react']
+        reactDom: ['react'],
+        jquery: {
+            exports: '$'
+        }
     }
 });

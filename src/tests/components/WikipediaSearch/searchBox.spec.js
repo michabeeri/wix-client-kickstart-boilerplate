@@ -6,8 +6,8 @@ define(['lodash', 'React', 'reactDOM', 'components/WikipediaSearch/SearchBox'],
 
         var TestUtils = React.addons.TestUtils;
 
-        describe('Search box tests', function () {
-            it('Search box should call props.searchTermChangeHandler for onChange events with the input value', function () {
+        describe('Search box', function () {
+            it('should call props.searchTermChangeHandler for onChange events and pass its value as argument', function () {
                 var onChangeCallback = jasmine.createSpy('onChangeCallback');
                 var instance = React.createElement(SearchBox, { searchTermChangeHandler: onChangeCallback });
                 var comp = TestUtils.renderIntoDocument(instance);
