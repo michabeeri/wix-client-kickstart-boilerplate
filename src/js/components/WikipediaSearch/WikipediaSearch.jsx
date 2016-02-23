@@ -16,10 +16,10 @@ define(['react', 'lodash', 'jquery', 'components/WikipediaSearch/SearchBox', 'co
                 results: _.zipWith(data[1], data[3], function (name, path) {return {id: _.uniqueId(), name: name, path: path}; })
             });
         },
-        throttledWikiphediaQuery: function (searchTerm) {
+        throttledWikiphediaQuery: _.throttle(function (searchTerm) {
                 var url = 'http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=' + encodeURIComponent(searchTerm) + '&callback=?';
                 $.getJSON(url).then(this.processQueryResults);
-            },
+            }, 1000),
         searchTermChangeHandler: function (newTerm) {
             if (!newTerm) {
                 this.setState({

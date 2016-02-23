@@ -56,23 +56,37 @@ define(['lodash', 'React', 'reactDOM', 'components/WikipediaSearch/WikipediaSear
                 mockedGetJSON = spyOn($, 'getJSON').and.returnValue(new Promise(function(resolve){
                     resolve(mockQueryResults);
                 }));
+                jasmine.clock().install();
+            });
 
-                comp.throttledWikiphediaQuery('giraffe');
-                //done();
+            afterEach(function() {
+                jasmine.clock().uninstall();
             });
 
             it('should query wikipedia with the supplied search term', function () {
+                comp.throttledWikiphediaQuery('giraffe');
                 expect(mockedGetJSON).toHaveBeenCalledWith(jasmine.stringMatching('&search=' + encodeURIComponent('giraffe')));
             });
 
             it('should chain processQueryResults to the async wikipedia query', function (done) {
+                comp.throttledWikiphediaQuery('giraffe');
                 window.setTimeout(function(){
                     expect(mockedProcessResults).toHaveBeenCalledWith(mockQueryResults);
                     done();
-                }, 500);
+                }, 0);
             });
 
-
+            it('should throttle consecutive queries and issue maximum of 1 per second', function () {
+                comp.throttledWikiphediaQuery('giraffe');
+                comp.throttledWikiphediaQuery('yak');
+                comp.throttledWikiphediaQuery('seal');
+                window.setTimeout(function(){
+                    expect(mockedGetJSON).toHaveBeenCalledTimes(2);
+                    expect(mockedGetJSON).toHaveBeenCalledWith(jasmine.stringMatching('&search=' + encodeURIComponent('giraffe')));
+                    expect(mockedGetJSON).toHaveBeenCalledWith(jasmine.stringMatching('&search=' + encodeURIComponent('seal')));
+                }, 1100);
+                jasmine.clock().tick(1200);
+            });
         });
     });
 });
