@@ -1,5 +1,5 @@
-define(['react', 'lodash', 'jquery', 'components/WikipediaSearch/SearchBox', 'components/WikipediaSearch/ResultsList'],
-    function (React, _, $, SearchBox, ResultsList) {
+define(['react', 'lodash', 'jquery', 'components/WikipediaSearch/SearchBox', 'components/WikipediaSearch/ResultsList', 'components/WikipediaSearch/WikipediaSearchLogic'],
+    function (React, _, $, SearchBox, ResultsList, WikipediaSearchLogic) {
 
         'use strict';
 
@@ -10,15 +10,8 @@ define(['react', 'lodash', 'jquery', 'components/WikipediaSearch/SearchBox', 'co
                     results: []
                 };
             },
-            processQueryResults: function (data) {
-                this.setState({
-                    searchTerm: data[0],
-                    results: _.zipWith(data[1], data[3], function (name, path) {return {id: _.uniqueId(), name: name, path: path}; })
-                });
-            },
-            throttledWikiphediaQuery: function (searchTerm) {
-                var url = 'http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=' + encodeURIComponent(searchTerm) + '&callback=?';
-                $.getJSON(url).then(this.processQueryResults);
+            componentDidMount: function () {
+                this.logic = new WikipediaSearchLogic();
             },
             searchTermChangeHandler: function (newTerm) {
                 if (!newTerm) {
@@ -30,7 +23,9 @@ define(['react', 'lodash', 'jquery', 'components/WikipediaSearch/SearchBox', 'co
                 }
 
                 if (newTerm !== this.state.searchTerm) {
-                    this.throttledWikiphediaQuery(newTerm);
+                    this.logic.search(newTerm, function(results){
+                        this.setState({searchTerm: newTerm, results: results})
+                    }.bind(this));
                 }
             },
             render: function () {
